@@ -18,14 +18,6 @@ junitPlatform {
     enableStandardTestTask true
 }
 
-jacocoTestReport {
-    reports {
-        //noinspection GroovyAssignabilityCheck
-        xml.enabled true
-        //noinspection GroovyAssignabilityCheck
-        html.enabled false
-    }
-}
 
 dependencies {
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
@@ -38,5 +30,31 @@ buildscript {
     }
     dependencies {
         classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: '1.0.0-M4'
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'junitPlatformTest') {
+        // configure jacoco to analyze the junitPlatformTest task
+        jacoco {
+            // this tool version is compatible with
+            toolVersion = "0.7.6.201602180812"
+            //noinspection GroovyAssignabilityCheck
+            applyTo task
+        }
+
+        // create junit platform jacoco task
+        project.task(type: JacocoReport, "junitPlatformJacocoReport",
+                {
+                    reports {
+                        //noinspection GroovyAssignabilityCheck
+                        xml.enabled true
+                        //noinspection GroovyAssignabilityCheck
+                        html.enabled false
+                    }
+                    sourceDirectories = files("./src/main")
+                    classDirectories = files("$buildDir/classes/main")
+                    executionData task
+                })
     }
 }

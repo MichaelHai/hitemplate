@@ -12,6 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SampleTests {
     @Test
     void firstTest() {
-        assertEquals(2, 1+1);
+        assertEquals("hello", new Example().hello());
     }
 }

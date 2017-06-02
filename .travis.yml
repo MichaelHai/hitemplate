@@ -14,4 +14,5 @@ cache:
     - $HOME/.gradle/wrapper/
 
 after_success:
+  - ./grandlew junitPlatformJacocoReport
   - bash <(curl -s https://codecov.io/bash)
