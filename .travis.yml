@@ -13,3 +13,8 @@ cache:
 after_success:
   - ./gradlew junitPlatformJacocoReport
   - bash <(curl -s https://codecov.io/bash)
+  - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
+  - java -jar jpm4j.jar -u init
+  - export PATH="/home/travis/jpm/bin:$PATH"
+  - jpm install com.codacy:codacy-coverage-reporter:assembly
+  - codacy-coverage-reporter -l Java -r build/reports/jacoco/report.xml
