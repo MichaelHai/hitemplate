@@ -18,6 +18,15 @@ junitPlatform {
     enableStandardTestTask true
 }
 
+jacocoTestReport {
+    reports {
+        //noinspection GroovyAssignabilityCheck
+        xml.enabled true
+        //noinspection GroovyAssignabilityCheck
+        html.enabled false
+    }
+}
+
 dependencies {
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
