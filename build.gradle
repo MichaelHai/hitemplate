@@ -1,7 +1,12 @@
-group 'cn.michaelwang.hitemplate'
+group 'cn.michaelhai.hitemplate'
 version '0.1-SNAPSHOT'
 
+ext.junitJupiterVersion = '5.0.0-M4'
+ext.junitPlatformVersion = '1.0.0-M4'
+
 apply plugin: 'java'
+apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 1.8
 
@@ -9,6 +14,48 @@ repositories {
     mavenCentral()
 }
 
+junitPlatform {
+    enableStandardTestTask true
+}
+
+
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: '1.0.0-M4'
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'junitPlatformTest') {
+        // configure jacoco to analyze the junitPlatformTest task
+        jacoco {
+            // this tool version is compatible with
+            toolVersion = "0.7.6.201602180812"
+            //noinspection GroovyAssignabilityCheck
+            applyTo task
+        }
+
+        // create junit platform jacoco task
+        project.task(type: JacocoReport, "junitPlatformJacocoReport",
+                {
+                    reports {
+                        //noinspection GroovyAssignabilityCheck
+                        xml.enabled true
+                        xml.destination "${buildDir}/reports/jacoco/report.xml"
+                        //noinspection GroovyAssignabilityCheck
+                        html.enabled false
+                    }
+                    sourceDirectories = files("./src/main")
+                    classDirectories = files("$buildDir/classes/main")
+                    executionData task
+                })
+    }
 }
